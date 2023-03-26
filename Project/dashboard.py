@@ -58,25 +58,27 @@ for i in range(len(date)):
 #calcul du low, high, vol, open, close
 low=np.min(bourse)
 high=np.max(bourse)
-vol=st.stdev(bourse)
+vol=np.std(bourse)
 open_price=bourse[0]
 close_price=bourse[-1]
 
 #convertion en df
 features=[['Open',open_price],['Close',close_price],['Volatility',vol],['Low',low],['High',high]]
-df = pd.DataFrame(features, columns=['Features', 'Value'])
+df = pd.DataFrame(features, columns=['Feature', 'Value'])
 
-print(df.head())
+#print(df.head())
 
 # DASHBOARD
 
 from dash import Dash, dash_table, dcc, html
-import pandas as pd
-import numpy as np
 
 app = Dash(__name__)
 
-table = dash_table.DataTable(df.to_dict('records'), [{"name": i, "id": i} for i in df.columns])
+table = dash_table.DataTable(df.to_dict('records'), [{"name": i, "id": i} for i in df.columns],
+                             style_cell_conditional=[{'if': {'column_id': 'Feature'},'width': '100px'},
+                                                    {'if': {'column_id': 'Value'},'width': '100px'}],
+                            style_data={ 'border': '1px solid grey' },
+                             style_header={ 'border': '1px solid blue' })
 
 app.layout = html.Div(children=[
     html.H1(children='Dashboard'),
@@ -87,4 +89,4 @@ app.layout = html.Div(children=[
 ])
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=1705)
+    app.run_server(debug=True, port=5050)
